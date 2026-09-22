@@ -69,5 +69,11 @@ def search_ship(request: ShipRequest):
 
         if matched_capacity and matched_type and matched_date:
             matching_ships.append(ship)
+        
+
+    if not matching_ships:
+        return {"matches": [],
+        "message": "No ships found"
+        }
 
     return {"matches": matching_ships}
