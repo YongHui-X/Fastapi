@@ -7,26 +7,33 @@ function App() {
   const [destination, setDestination] = useState("");
   const [requireDate, setRequireDate] = useState("");
   const [ships, setShips] = useState([]);
+  const [message, setMessage] = useState("");
 
   const searchShips = async () => {
-    const response = await fetch("http://localhost:8000/api/ship/search", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        cargo_type: cargoType,
-        cargo_weight: Number(cargoWeight),
-        origin,
-        destination,
-        require_date: requireDate,
-      }),
-    });
+    try {
+      const response = await fetch("http://localhost:8001/api/ship/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cargo_type: cargoType,
+          cargo_weight: Number(cargoWeight),
+          origin,
+          destination,
+          require_date: requireDate,
+        }),
+      });
 
-    console.log("RESPONSE:", response);
-    const data = await response.json();
-    console.log("DATA:", data);
-    setShips(data.matches || []);
+      const data = await response.json();
+      console.log("RESPONSE:", response);
+      console.log("DATA:", data);
+
+      setShips(data.matches || []);
+      setMessage(data.message || "");
+    } catch (error) {
+      console.error("Search failed:", error);
+    }
   };
 
   return (
@@ -91,6 +98,8 @@ function App() {
         >
           Search Ships
         </button>
+
+        {message && <p>{message}</p>}
       </div>
 
       <div style={{ marginTop: "24px" }}>
